@@ -15,4 +15,8 @@
 
 #define TIME_STEP 50 // in ms
 
+typedef struct {
+    float x, y, z;
+} point3f;
+
 #endif // QUOD_GLOBALS_H
