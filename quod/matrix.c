@@ -7,7 +7,7 @@
 //  Perspective code taken from http://www.opengl.org/wiki/GluPerspective_code
 
 #include <math.h>
-
+#include <stdio.h>
 #include "matrix.h"
 
 void glSetPerspective(float* matrix,
@@ -53,3 +53,44 @@ void glSetFrustum(float* matrix,
     matrix[15] = 0.0;
 }
 
+void matrix_print_row_major(float* matrix, size_t size) {
+    size_t i = 0;
+    size_t j = 0;
+    
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++)
+            printf("%lf ", matrix[i * size + j]);
+        printf("\n");
+    }
+}
+
+void matrix_print_col_major(float* matrix, size_t size) {
+    size_t i = 0;
+    size_t j = 0;
+    
+    for (j = 0; j < size; j++) {
+        for (i = 0; i < size; i++)
+            printf("%lf ", matrix[i * size + j]);
+        printf("\n");
+    }
+}
+
+void matrix_transpose_square(float* dst, float* src, size_t size) {
+    size_t i = 0;
+    size_t j = 0;
+    
+    for (i = 0; i < size; i++)
+        for (j = 0; j < size; j++)
+            dst[j * size + i] = src[i * size + j];
+}
+
+void matrix_translate_to_position(float* dst, float* src, point3f* pos) {
+    size_t i;
+    
+    for (i = 0; i < 16; i++)
+        dst[i] = src[i];
+    
+    dst[3]  = -pos->x;
+    dst[7]  = -pos->y;
+    dst[11] = -pos->z;
+}

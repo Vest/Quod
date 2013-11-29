@@ -26,8 +26,8 @@ typedef enum {
 #define CELL_WIDTH   1.0f
 #define CELL_HEIGHT  0.01f
 
-#define CELL_SPACING_X 0.01f
-#define CELL_SPACING_Y 0.01f
+#define CELL_SPACING_X 0.1f
+#define CELL_SPACING_Y 0.1f
 
 void board_init();
 void board_render();
