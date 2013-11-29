@@ -12,6 +12,7 @@
 		FB63B8E6184632A4004D7D1E /* quaternion.c in Sources */ = {isa = PBXBuildFile; fileRef = FB63B8E5184632A4004D7D1E /* quaternion.c */; };
 		FB63B8EA18463F0B004D7D1E /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = FB63B8E918463F0B004D7D1E /* matrix.c */; };
 		FB63B8EC18476936004D7D1E /* board.c in Sources */ = {isa = PBXBuildFile; fileRef = FB63B8EB18476936004D7D1E /* board.c */; };
+		FB63B8EF18494AC0004D7D1E /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = FB63B8EE18494AC0004D7D1E /* vector.c */; };
 		FB81478F1843D5E600FD0FF7 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB81478E1843D5E600FD0FF7 /* SDL2.framework */; };
 		FB8147911843D60D00FD0FF7 /* engine.c in Sources */ = {isa = PBXBuildFile; fileRef = FB8147901843D60D00FD0FF7 /* engine.c */; };
 		FB9CA5091843D3D6001E5684 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = FB9CA5081843D3D6001E5684 /* main.c */; };
@@ -41,6 +42,8 @@
 		FB63B8E818463F02004D7D1E /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 		FB63B8E918463F0B004D7D1E /* matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
 		FB63B8EB18476936004D7D1E /* board.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = board.c; sourceTree = "<group>"; };
+		FB63B8ED18494AAE004D7D1E /* vector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
+		FB63B8EE18494AC0004D7D1E /* vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
 		FB81478E1843D5E600FD0FF7 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		FB8147901843D60D00FD0FF7 /* engine.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = engine.c; sourceTree = "<group>"; };
 		FB8147921843D62D00FD0FF7 /* engine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = engine.h; sourceTree = "<group>"; };
@@ -97,6 +100,8 @@
 				FB63B8E7184633DF004D7D1E /* quaternion.h */,
 				FB63B8E818463F02004D7D1E /* matrix.h */,
 				FB63B8E918463F0B004D7D1E /* matrix.c */,
+				FB63B8ED18494AAE004D7D1E /* vector.h */,
+				FB63B8EE18494AC0004D7D1E /* vector.c */,
 			);
 			path = quod;
 			sourceTree = "<group>";
@@ -154,6 +159,7 @@
 			files = (
 				FB63B8EC18476936004D7D1E /* board.c in Sources */,
 				FB9CA5091843D3D6001E5684 /* main.c in Sources */,
+				FB63B8EF18494AC0004D7D1E /* vector.c in Sources */,
 				FB63B8EA18463F0B004D7D1E /* matrix.c in Sources */,
 				FB63B8E41844FDBF004D7D1E /* camera.c in Sources */,
 				FB8147911843D60D00FD0FF7 /* engine.c in Sources */,

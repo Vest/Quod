@@ -90,6 +90,7 @@ void engine_stop() {
 void engine_loop() {
     SDL_Event event;
     SDL_Event evCustom; // custom events used for communication
+    const Uint8* keys = SDL_GetKeyboardState(NULL);
     
     /* time measure */
     Uint32 tCurrent = 0,
@@ -139,7 +140,15 @@ void engine_loop() {
         
         if (tPassed >= TIME_STEP) {
             tPassed -= TIME_STEP;
-            /* here update the state */
+            
+            if (keys[SDL_SCANCODE_RIGHT])
+                camera_rotate_cw(90.0f / 1000.0f * TIME_STEP);
+            else if (keys[SDL_SCANCODE_LEFT])
+                camera_rotate_ccw(90.0f / 1000.0f * TIME_STEP);
+            if (keys[SDL_SCANCODE_UP])
+                camera_accelerate(1.0f / 1000.0f * TIME_STEP);
+            else if (keys[SDL_SCANCODE_DOWN])
+                camera_accelerate(-1.0f / 1000.0f * TIME_STEP);
         }
 
         engine_render_frame();
