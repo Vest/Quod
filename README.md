@@ -18,7 +18,7 @@ Squares can be any size and orientation, and players have a limited supply of
 blocking pieces, which adds to the complexity and interest.
 
 Game Rules
-===============================================================================
+-------------------------------------------------------------------------------
 Quod is played on a 11 x 11 square grid board with the four outer corners
 missing. Players take turns placing pieces on the board. Each player begins
 the game with 20 attacking (colored) pieces, and 6 blocking (white) pieces.
@@ -33,7 +33,7 @@ either has made a quod, the player with the most unplayed blocking pieces is
 declared the winner. If each has the same amount of blocking pieces (or if
 neither has any), the game is declared a draw.
 
-===============================================================================
+-------------------------------------------------------------------------------
 Here, I've decided to put this old letter, found in the original Delphi's Quod.
 I want to thank all authors for their ideas and code. Unfortunately, I haven't
 talk with them about my game yet, but one day, I hope, they will see it and
@@ -43,7 +43,7 @@ V.
 18 Nov 2008
 
 A Message from Quod's Inventor
-===============================================================================
+-------------------------------------------------------------------------------
 
 I developed the game of Quod back in 1979 when I was a student at university.
 My goal was to develop a quick-to-play but complex game with fewer rules than
