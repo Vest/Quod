@@ -11,6 +11,8 @@
 
 #include "globals.h"
 #include "engine.h"
+#include "board.h"
+#include "camera.h"
 
 /* private variables */
 SDL_Window* mainWindow  = NULL;
@@ -19,6 +21,7 @@ SDL_bool bRunning = SDL_TRUE;
 
 /* private functions */
 int engine_opengl_init();
+void engine_render_frame();
 
 int engine_init() {
     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Engine Initialization - started\n");
@@ -45,6 +48,8 @@ int engine_init() {
     if (engine_opengl_init())
         return ENGINE_ERROR;
     
+    board_init();
+    
     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Engine Initialization - finished\n");
     return 0;
 }
@@ -65,12 +70,16 @@ int engine_opengl_init() {
         return ENGINE_ERROR;
     }
     
+    camera_init();
+    
     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "OpenGL Initialization - finished\n");
     
     return 0;
 }
 
 void engine_stop() {
+    camera_free();
+    
     SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(mainWindow);
     SDL_Quit();
@@ -81,12 +90,15 @@ void engine_stop() {
 void engine_loop() {
     SDL_Event event;
     SDL_Event evCustom; // custom events used for communication
+    const Uint8* keys = SDL_GetKeyboardState(NULL);
     
     /* time measure */
     Uint32 tCurrent = 0,
     tDelta = 0,
     tLast = 0,
     tPassed = 0; // passed time
+    
+    camera_reset_window(640, 480);
     
     while (bRunning == SDL_TRUE) {
         tCurrent = SDL_GetTicks();
@@ -98,7 +110,7 @@ void engine_loop() {
             switch (event.type) {
                 case SDL_QUIT:
                     SDL_LogDebug(SDL_LOG_CATEGORY_INPUT, "Quit timestamp: %dms\n", event.quit.timestamp);
-
+                    
                     bRunning = SDL_FALSE;
                     break;
                     
@@ -113,11 +125,60 @@ void engine_loop() {
                             break;
                     }
                     break;
+                case SDL_WINDOWEVENT:
+                    switch (event.window.event) {
+                        case SDL_WINDOWEVENT_RESIZED:
+                            SDL_LogDebug(SDL_LOG_CATEGORY_VIDEO, "Window %d resized to %dx%d",
+                                         event.window.windowID,
+                                         event.window.data1, event.window.data2);
+                            camera_reset_window(event.window.data1, event.window.data2);
+                            break;
+                    }
+                    break;
             }
         }
         
         if (tPassed >= TIME_STEP) {
             tPassed -= TIME_STEP;
+            
+            float step = 0.5f;
+            
+            if (keys[SDL_SCANCODE_UP])
+                camera_move_forward(step);
+            else if (keys[SDL_SCANCODE_DOWN])
+                camera_move_forward(-step);
+            
+            if (keys[SDL_SCANCODE_RIGHT])
+                camera_rotate_yaw(step * 2);
+            else if (keys[SDL_SCANCODE_LEFT])
+                camera_rotate_yaw(-step * 2);
+            
+            if (keys[SDL_SCANCODE_Q])
+                camera_rotate_pitch(step);
+            else if (keys[SDL_SCANCODE_A])
+                camera_rotate_pitch(-step);
+            
+            /*
+             if (keys[SDL_SCANCODE_E])
+             camera_move_right(-2.0f / 1000.0f * TIME_STEP);
+             else if (keys[SDL_SCANCODE_T])
+             camera_move_right(2.0f / 1000.0f * TIME_STEP);
+             
+             if (keys[SDL_SCANCODE_R])
+             camera_move_up(2.0f / 1000.0f * TIME_STEP);
+             else if (keys[SDL_SCANCODE_F])
+             camera_move_up(-2.0f / 1000.0f * TIME_STEP);
+             */
         }
+        
+        engine_render_frame();
+        
+        SDL_GL_SwapWindow(mainWindow);
     }
+}
+
+void engine_render_frame() {
+    glClear( GL_COLOR_BUFFER_BIT );
+    camera_render();
+    board_render();
 }

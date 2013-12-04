@@ -15,4 +15,12 @@
 
 #define TIME_STEP 50 // in ms
 
+#define EPSILON 4.37114e-07
+
+/*
+typedef struct {
+    float x, y, z;
+} point3f;
+*/
+
 #endif // QUOD_GLOBALS_H
