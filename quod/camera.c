@@ -115,28 +115,6 @@ void camera_rotate_yaw(float step) {
     
     free(qCopy);
     free(qRotX);
-    
-    /*
-     quaternion_t* q = quaternion_new_axis_angle(step, cam.dir->x, cam.dir->y, cam.dir->z);
-     quaternion_t* p = quaternion_new_set(0.0, cam.up->x, cam.up->y, cam.up->z);
-     quaternion_t* q_conj = quaternion_new();
-     quaternion_t* tmp = quaternion_new();
-     quaternion_t* up_new = quaternion_new();
-     quaternion_conj(q_conj, q);
-     
-     quaternion_mul(tmp, q, p);
-     quaternion_mul(up_new, tmp, q_conj);
-     
-     cam.up->x = up_new->x;
-     cam.up->y = up_new->y;
-     cam.up->z = up_new->z;
-     
-     free(up_new);
-     free(tmp);
-     free(q);
-     free(p);
-     free(q_conj);
-     */
 }
 
 void camera_rotate_pitch(float step) {
@@ -151,30 +129,29 @@ void camera_rotate_pitch(float step) {
 }
 
 void camera_move_right(float step) {
-    quaternion_t* q = quaternion_new_axis_angle(step, 1.0, 0.0, 0.0);
-    quaternion_t* qf = quaternion_new();
+    vector3f* right;
     
-    quaternion_mul(qf, q, cam.q);
-    camera_set_quaternion(qf);
+    matrix_inverse(cam.mWorld, cam.mView);
     
+    right = vector3f_new_set(cam.mWorld[0], cam.mWorld[4], cam.mWorld[8]);
     
-    free(qf);
-    free(q);
+    vector3f_mul_scalar(right, right, step);
+    vector3f_add(&cam.pos, &cam.pos, right);
+    
+    free(right);
 }
 
 void camera_move_up(float step) {
-    quaternion_t* up_def = quaternion_new_set(0.0, 0.0, 1.0, 0.0);
-    quaternion_t* up_new = quaternion_new();
+    vector3f* right;
     
-    quaternion_mul(up_new, up_def, cam.q);
-    quaternion_mul_d(up_new, up_new, step);
+    matrix_inverse(cam.mWorld, cam.mView);
     
-    cam.pos.x += up_new->x;
-    cam.pos.y += up_new->y;
-    cam.pos.z += up_new->z;
+    right = vector3f_new_set(cam.mWorld[1], cam.mWorld[5], cam.mWorld[6]);
     
-    free(up_new);
-    free(up_def);
+    vector3f_mul_scalar(right, right, step);
+    vector3f_add(&cam.pos, &cam.pos, right);
+    
+    free(right);
 }
 
 void camera_set_quaternion(const quaternion_t* q) {

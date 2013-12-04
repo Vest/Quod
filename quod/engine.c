@@ -153,22 +153,20 @@ void engine_loop() {
             else if (keys[SDL_SCANCODE_LEFT])
                 camera_rotate_yaw(-step * 2);
             
-            if (keys[SDL_SCANCODE_Q])
+            if (keys[SDL_SCANCODE_E])
                 camera_rotate_pitch(step);
-            else if (keys[SDL_SCANCODE_A])
+            else if (keys[SDL_SCANCODE_Q])
                 camera_rotate_pitch(-step);
             
-            /*
-             if (keys[SDL_SCANCODE_E])
-             camera_move_right(-2.0f / 1000.0f * TIME_STEP);
-             else if (keys[SDL_SCANCODE_T])
-             camera_move_right(2.0f / 1000.0f * TIME_STEP);
-             
-             if (keys[SDL_SCANCODE_R])
-             camera_move_up(2.0f / 1000.0f * TIME_STEP);
-             else if (keys[SDL_SCANCODE_F])
-             camera_move_up(-2.0f / 1000.0f * TIME_STEP);
-             */
+            if (keys[SDL_SCANCODE_D])
+                camera_move_right(step);
+            else if (keys[SDL_SCANCODE_A])
+                camera_move_right(-step);
+            
+            if (keys[SDL_SCANCODE_W])
+                camera_move_up(step);
+            else if (keys[SDL_SCANCODE_S])
+                camera_move_up(-step);
         }
         
         engine_render_frame();
