@@ -4,14 +4,16 @@
 //
 //  Created by Volodin, Vladislav on 27.11.13.
 //  Copyright (c) 2013
+//  Some code has been borrowed from
 //  http://rosettacode.org/wiki/Simple_Quaternion_type_and_operations#C
-//
+//  http://www.flipcode.com/documents/matrfaq.html
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 #include "quaternion.h"
+#include "globals.h"
 
 quaternion_t *quaternion_new(void) {
     return malloc(sizeof(quaternion_t));
@@ -37,7 +39,7 @@ quaternion_t* quaternion_new_axis_angle(double degrees,
                                         double x,
                                         double y,
                                         double z) {
-    quaternion_t *q = malloc(sizeof(quaternion_t));
+    quaternion_t *q = (quaternion_t *)malloc(sizeof(quaternion_t));
     
     if (q != NULL) {
         double radians = degrees * M_PI / 180.0;
@@ -47,6 +49,53 @@ quaternion_t* quaternion_new_axis_angle(double degrees,
         q->x = x * result;
         q->y = y * result;
         q->z = z * result;
+    }
+    
+    return q;
+}
+
+quaternion_t* quaternion_new_matrix(const float* m) {
+    quaternion_t *q = NULL;
+    double tr, s; // trace
+    
+    tr = m[0] + m[5] + m[10] + 1.0;
+    
+    if (tr >= EPSILON) {
+        s = 0.5 / sqrt(tr);
+        q = quaternion_new_set(0.25 / s,
+                               (m[9] - m[6]) * s,
+                               (m[2] - m[8]) * s,
+                               (m[4] - m[1]) * s);
+    } else {
+        float d0 = m[0];
+        float d1 = m[5];
+        float d2 = m[10];
+        
+        // Determines the column index of the largest diagonal element
+        char bigIdx = (d0 > d1) ? ((d0 > d2) ? 0 : 2) : ((d1 > d2) ? 1 : 2);
+        
+        if (bigIdx == 0) {
+            s = sqrt(1.0 + m[0] - m[5] - m[10]) * 2.0;
+            
+            q = quaternion_new_set((m[6] + m[9]) / s,
+                                   0.5 / s,
+                                   (m[1] + m[4]) / s,
+                                   (m[2] + m[8]) / s);
+        } else if (bigIdx == 1) {
+            s = sqrt(1.0 + m[5] - m[0] - m[10]) * 2.0;
+            
+            q = quaternion_new_set((m[2] + m[8]) / s,
+                                   (m[1] + m[4]) / s,
+                                   0.5 / s,
+                                   (m[6] + m[9]) / s);
+        } else {
+            s = sqrt(1.0 + m[10] - m[0] - m[5] ) * 2.0;
+            
+            q = quaternion_new_set((m[1] + m[4]) / s,
+                                   (m[2] + m[8]) / s,
+                                   (m[6] + m[9]) / s,
+                                   0.5 / s);
+        }
     }
     
     return q;
@@ -63,7 +112,7 @@ void quaternion_copy(quaternion_t *r, const quaternion_t *q) {
 }
 
 
-double quaternion_norm(quaternion_t *q) {
+double quaternion_norm(const quaternion_t *q) {
     size_t i;
     double r = 0.0;
     
@@ -82,14 +131,14 @@ void quaternion_normalize(quaternion_t* q) {
     size_t i;
     double norm = quaternion_norm(q);
     
-    if (norm == 0.0)
+    if (fabs(norm) <= EPSILON)
         return;
     
     for (i = 0; i < 4; i++)
         q->q[i] /= norm;
 }
 
-void quaternion_neg(quaternion_t *r, quaternion_t *q) {
+void quaternion_neg(quaternion_t *r, const quaternion_t *q) {
     size_t i;
     
     if (q == NULL || r == NULL)
@@ -100,7 +149,7 @@ void quaternion_neg(quaternion_t *r, quaternion_t *q) {
 }
 
 
-void quaternion_conj(quaternion_t *r, quaternion_t *q) {
+void quaternion_conj(quaternion_t *r, const quaternion_t *q) {
     size_t i;
     
     if (q == NULL || r == NULL)
@@ -115,12 +164,13 @@ void quaternion_conj(quaternion_t *r, quaternion_t *q) {
 void quaternion_add_d(quaternion_t *r, const quaternion_t *q, double d) {
     if (r == NULL || q == NULL)
         return;
+    
     quaternion_copy(r, q);
     r->q[0] += d;
 }
 
 
-void quaternion_add(quaternion_t *r, quaternion_t *a, quaternion_t *b) {
+void quaternion_add(quaternion_t *r, const quaternion_t *a, const quaternion_t *b) {
     size_t i;
     
     if (r == NULL || a == NULL || b == NULL)
@@ -131,7 +181,7 @@ void quaternion_add(quaternion_t *r, quaternion_t *a, quaternion_t *b) {
 }
 
 
-void quaternion_mul_d(quaternion_t *r, quaternion_t *q, double d) {
+void quaternion_mul_d(quaternion_t *r, const quaternion_t *q, double d) {
     size_t i;
     
     if (r == NULL || q == NULL)
@@ -141,7 +191,7 @@ void quaternion_mul_d(quaternion_t *r, quaternion_t *q, double d) {
         r->q[i] = q->q[i] * d;
 }
 
-int quaternion_equal(quaternion_t *a, quaternion_t *b) {
+int quaternion_equal(const quaternion_t *a, const quaternion_t *b) {
     size_t i;
     
     if (a == NULL || b == NULL)
@@ -154,28 +204,21 @@ int quaternion_equal(quaternion_t *a, quaternion_t *b) {
     return 1;
 }
 
-
 #define A(N) (a->q[(N)])
 #define B(N) (b->q[(N)])
 #define R(N) (r->q[(N)])
-void quaternion_mul(quaternion_t *r, quaternion_t *a, quaternion_t *b)
-{
-    // size_t i;
-    // double ri = 0.0;
-    
+void quaternion_mul(quaternion_t *r, const quaternion_t *a, const quaternion_t *b) {
     if (r == NULL || a == NULL || b == NULL) return;
-    R(0) = A(0)*B(0) - A(1)*B(1) - A(2)*B(2) - A(3)*B(3);
-    R(1) = A(0)*B(1) + A(1)*B(0) + A(2)*B(3) - A(3)*B(2);
-    R(2) = A(0)*B(2) - A(1)*B(3) + A(2)*B(0) + A(3)*B(1);
-    R(3) = A(0)*B(3) + A(1)*B(2) - A(2)*B(1) + A(3)*B(0);
+    R(0) = A(0) * B(0) - A(1) * B(1) - A(2) * B(2) - A(3) * B(3);
+    R(1) = A(0) * B(1) + A(1) * B(0) + A(2) * B(3) - A(3) * B(2);
+    R(2) = A(0) * B(2) - A(1) * B(3) + A(2) * B(0) + A(3) * B(1);
+    R(3) = A(0) * B(3) + A(1) * B(2) - A(2) * B(1) + A(3) * B(0);
 }
 #undef A
 #undef B
 #undef R
 
-
-void quaternion_print(quaternion_t *q)
-{
+void quaternion_print(const quaternion_t *q) {
     if (q == NULL)
         return;
     
@@ -183,7 +226,7 @@ void quaternion_print(quaternion_t *q)
            q->q[0], q->q[1], q->q[2], q->q[3]);
 }
 
-void quaternion_to_rotation_matrix(float* matrix, quaternion_t* q) {
+void quaternion_to_rotation_matrix(float* matrix, const quaternion_t* q) {
     float xx = q->x * q->x;
     float xy = q->x * q->y;
     float xz = q->x * q->z;
@@ -210,30 +253,6 @@ void quaternion_to_rotation_matrix(float* matrix, quaternion_t* q) {
     
     matrix[3]  = matrix[7] = matrix[11] = matrix[12] = matrix[13] = matrix[14] = 0.0f;
     matrix[15] = 1.0f;
-}
-
-// http://wiki.delphigl.com/index.php/gluLookAt
-void quaternion_to_view_matrix(float* matrix, quaternion_t* q, quaternion_t* up) {
-    quaternion_t s;
-    quaternion_mul(&s, q, up);
-    quaternion_normalize(&s);
-    
-	quaternion_t u;
-    quaternion_mul(&u, &s, q);
-	quaternion_normalize(&u);
-    
-    matrix[0] = s.x;   matrix[4] = s.y;    matrix[8] = s.z;    matrix[12] = 0.0f;
-    matrix[1] = u.x;   matrix[5] = u.y;    matrix[9] = u.z;    matrix[13] = 0.0f;
-    matrix[2] = -q->x; matrix[6] = -q->y;  matrix[10] = -q->z; matrix[14] = 0.0f;
-    matrix[3] = 0.0f;  matrix[7] = 0.0f;   matrix[11] = 0.0f;  matrix[15] = 1.0f;
-    /*
-     float m[16] = {
-     s.x,    s.y,   s.z, 0.0f,
-     u.x,    u.y,   u.z, 0.0f,
-     -q->x, -q->y, -q->z, 0.0f,
-     0.0f,  0.0f,  0.0f, 1.0f
-     };
-     */
 }
 
 double quaternion_get_deg_angle(const quaternion_t* q) {

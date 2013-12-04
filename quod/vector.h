@@ -9,7 +9,9 @@
 #ifndef QUOD_VECTOR_H
 #define QUOD_VECTOR_H
 
-typedef struct {
+#include "matrix.h"
+
+typedef struct vector3f {
     float x, y, z;
 } vector3f;
 
@@ -35,6 +37,6 @@ int  vector3f_equal(const vector3f* a, const vector3f* b);
 
 void vector3f_print(const vector3f* v);
 
-void vector_to_view_matrix(float* matrix, vector3f* dir, vector3f* up);
+void vector_mul_matrix(vector3f* r, const vector3f* v, const float* m);
 
 #endif // QUOD_VECTOR_H

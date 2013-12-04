@@ -33,6 +33,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FB48970F184F723600890B06 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		FB5AACF91844862300D47616 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		FB63B8DF1844EE9E004D7D1E /* board.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = board.h; sourceTree = "<group>"; };
 		FB63B8E21844FDB6004D7D1E /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
@@ -102,6 +103,7 @@
 				FB63B8E918463F0B004D7D1E /* matrix.c */,
 				FB63B8ED18494AAE004D7D1E /* vector.h */,
 				FB63B8EE18494AC0004D7D1E /* vector.c */,
+				FB48970F184F723600890B06 /* README.md */,
 			);
 			path = quod;
 			sourceTree = "<group>";

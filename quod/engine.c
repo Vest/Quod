@@ -71,9 +71,9 @@ int engine_opengl_init() {
     }
     
     camera_init();
-  
+    
     SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "OpenGL Initialization - finished\n");
-
+    
     return 0;
 }
 
@@ -141,16 +141,36 @@ void engine_loop() {
         if (tPassed >= TIME_STEP) {
             tPassed -= TIME_STEP;
             
-            if (keys[SDL_SCANCODE_RIGHT])
-                camera_rotate_cw(90.0f / 1000.0f * TIME_STEP);
-            else if (keys[SDL_SCANCODE_LEFT])
-                camera_rotate_ccw(90.0f / 1000.0f * TIME_STEP);
+            float step = 0.5f;
+            
             if (keys[SDL_SCANCODE_UP])
-                camera_accelerate(1.0f / 1000.0f * TIME_STEP);
+                camera_move_forward(step);
             else if (keys[SDL_SCANCODE_DOWN])
-                camera_accelerate(-1.0f / 1000.0f * TIME_STEP);
+                camera_move_forward(-step);
+            
+            if (keys[SDL_SCANCODE_RIGHT])
+                camera_rotate_yaw(step * 2);
+            else if (keys[SDL_SCANCODE_LEFT])
+                camera_rotate_yaw(-step * 2);
+            
+            if (keys[SDL_SCANCODE_Q])
+                camera_rotate_pitch(step);
+            else if (keys[SDL_SCANCODE_A])
+                camera_rotate_pitch(-step);
+            
+            /*
+             if (keys[SDL_SCANCODE_E])
+             camera_move_right(-2.0f / 1000.0f * TIME_STEP);
+             else if (keys[SDL_SCANCODE_T])
+             camera_move_right(2.0f / 1000.0f * TIME_STEP);
+             
+             if (keys[SDL_SCANCODE_R])
+             camera_move_up(2.0f / 1000.0f * TIME_STEP);
+             else if (keys[SDL_SCANCODE_F])
+             camera_move_up(-2.0f / 1000.0f * TIME_STEP);
+             */
         }
-
+        
         engine_render_frame();
         
         SDL_GL_SwapWindow(mainWindow);

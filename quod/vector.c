@@ -123,25 +123,8 @@ void vector3f_print(const vector3f* v) {
            v->x, v->y, v->z);
 }
 
-void vector_to_view_matrix(float* matrix, vector3f* dir, vector3f* up) {
-    vector3f s;
-    vector3f_cross_product(&s, dir, up);
-    vector3f_normalize(&s);
-    
-	vector3f u;
-    vector3f_cross_product(&u, &s, dir);
-	vector3f_normalize(&u);
-    
-    matrix[0] = s.x;   matrix[4] = s.y;    matrix[8] = s.z;    matrix[12] = 0.0f;
-    matrix[1] = u.x;   matrix[5] = u.y;    matrix[9] = u.z;    matrix[13] = 0.0f;
-    matrix[2] = -dir->x; matrix[6] = -dir->y;  matrix[10] = -dir->z; matrix[14] = 0.0f;
-    matrix[3] = 0.0f;  matrix[7] = 0.0f;   matrix[11] = 0.0f;  matrix[15] = 1.0f;
-    /*
-     float m[16] = {
-     s.x,    s.y,   s.z, 0.0f,
-     u.x,    u.y,   u.z, 0.0f,
-     -dir->x, -dir->y, -dir->z, 0.0f,
-     0.0f,  0.0f,  0.0f, 1.0f
-     };
-     */
+void vector_mul_matrix(vector3f* r, const vector3f* v, const float* m) {
+    r->x = v->x * m[0] + v->y * m[4] + v->z * m[8];
+    r->y = v->x * m[1] + v->y * m[5] + v->z * m[9];
+    r->z = v->x * m[2] + v->y * m[6] + v->z * m[10];
 }
