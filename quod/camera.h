@@ -14,21 +14,25 @@
 #include "quaternion.h"
 
 typedef struct {
-    point3f pos;        // postion of the camera
-    vector3f* dir;  // direction of the sight
-    vector3f* up;   // up quaternion
+    vector3f pos;    // camera position
+    quaternion_t* q; // camera quaternion
     
-    float mSpeed; // movement speed toward the quaternion direction
-    float rSpeed; // rotation speed
+    // World x View x Projection
+    float* mWorld;
+    float* mView;
+    float* mProjection;
 } camera;
 
-void camera_init();
-void camera_render();
-void camera_free();
+void camera_init(void);
+void camera_render(void);
+void camera_free(void);
 
 void camera_reset_window(int width, int height);
-void camera_accelerate(float step);
-void camera_rotate_cw(float step);
-void camera_rotate_ccw(float step);
+void camera_move_forward(float step);
+void camera_rotate_yaw(float step);
+void camera_rotate_pitch(float step);
+void camera_move_right(float step);
+void camera_move_up(float step);
 
+void camera_set_quaternion(const quaternion_t* q);
 #endif // QUOD_CAMERA_H
