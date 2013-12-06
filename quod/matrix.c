@@ -244,6 +244,8 @@ float matrix4f_det(const float* matrix) {
         
         det     = matrix3f_det(mSub3f);
         result += matrix[n] * det * i;
+        
+        free(mSub3f);
     }
     
     return result;

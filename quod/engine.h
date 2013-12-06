@@ -9,8 +9,10 @@
 #ifndef QUOD_ENGINE_H
 #define QUOD_ENGINE_H
 
-int  engine_init();
-void engine_stop();
-void engine_loop();
+int  engine_init(void);
+void engine_stop(void);
+void engine_loop(void);
+
+void engine_handle_mouse(SDL_MouseMotionEvent* mouseEvent);
 
 #endif // QUOD_ENGINE_H
