@@ -107,18 +107,29 @@ void camera_move_forward(float step) {
 }
 
 void camera_rotate_yaw(float step) {
-    quaternion_t* qRotX = quaternion_new_axis_angle(step, 0, 0, -1);
+    quaternion_t* qRot = quaternion_new_axis_angle(-step, 0, 0, -1);
     quaternion_t* qCopy = quaternion_new();
     
-    quaternion_mul(qCopy, cam.q, qRotX);
+    quaternion_mul(qCopy, qRot, cam.q);
     camera_set_quaternion(qCopy);
     
     free(qCopy);
-    free(qRotX);
+    free(qRot);
 }
 
 void camera_rotate_pitch(float step) {
     quaternion_t* qRot = quaternion_new_axis_angle(-step, 1, 0, 0);
+    quaternion_t* qCopy = quaternion_new();
+    
+    quaternion_mul(qCopy, qRot, cam.q);
+    camera_set_quaternion(qCopy);
+    
+    free(qCopy);
+    free(qRot);
+}
+
+void camera_rotate_roll(float step) {
+    quaternion_t* qRot = quaternion_new_axis_angle(-step, 0, -1, 0);
     quaternion_t* qCopy = quaternion_new();
     
     quaternion_mul(qCopy, qRot, cam.q);

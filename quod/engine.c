@@ -98,6 +98,8 @@ void engine_loop() {
     tLast = 0,
     tPassed = 0; // passed time
     
+    SDL_bool isMouseCaptured = SDL_FALSE;
+    
     camera_reset_window(640, 480);
     
     while (bRunning == SDL_TRUE) {
@@ -134,6 +136,34 @@ void engine_loop() {
                             camera_reset_window(event.window.data1, event.window.data2);
                             break;
                     }
+                    break;
+                    
+                case SDL_MOUSEBUTTONDOWN:
+                    if (!isMouseCaptured) {
+                        SDL_LogDebug(SDL_LOG_CATEGORY_INPUT, "Mouse has been captured");
+                        isMouseCaptured = SDL_TRUE;
+                        SDL_SetRelativeMouseMode(SDL_TRUE);
+                
+#ifdef __APPLE__
+                        // I have to skip the first mouse movement, otherwise I get a long step.
+                        // Same issue: http://stackoverflow.com/questions/8491444/first-mouse-movement-unexpected-using-sdl-c
+                        SDL_GetRelativeMouseState(NULL, NULL);
+#endif // __APPLE__
+                    }
+                    break;
+                    
+                case SDL_MOUSEBUTTONUP:
+                    // Helps to release mouse only one time, when none of buttons has been pressed
+                    if (!SDL_GetMouseState(NULL, NULL) && isMouseCaptured) {
+                        SDL_LogDebug(SDL_LOG_CATEGORY_INPUT, "Mouse has been released");
+                        isMouseCaptured = SDL_FALSE;
+                        SDL_SetRelativeMouseMode(SDL_FALSE);
+                    }
+                    break;
+                    
+                case SDL_MOUSEMOTION:
+                    if (isMouseCaptured)
+                        engine_handle_mouse(&event.motion);
                     break;
             }
         }
@@ -179,4 +209,13 @@ void engine_render_frame() {
     glClear( GL_COLOR_BUFFER_BIT );
     camera_render();
     board_render();
+}
+
+void engine_handle_mouse(SDL_MouseMotionEvent* mouseEvent) {
+    int x, y;
+    SDL_GetRelativeMouseState(&x, &y);
+    
+    SDL_Log("x: %d, y: %d\n", x, y);
+    camera_rotate_pitch(y / 10.0);
+    camera_rotate_roll(x / 10.0);
 }

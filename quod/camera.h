@@ -31,6 +31,7 @@ void camera_reset_window(int width, int height);
 void camera_move_forward(float step);
 void camera_rotate_yaw(float step);
 void camera_rotate_pitch(float step);
+void camera_rotate_roll(float step);
 void camera_move_right(float step);
 void camera_move_up(float step);
 
